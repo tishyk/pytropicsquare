@@ -919,8 +919,16 @@ class TropicSquare:
         ciphertext = enc[:-16]
         tag = enc[-16:]
 
-        result_cipher, result_tag = self._l2.encrypted_command(len(ciphertext), ciphertext, tag)
-        decrypted = self._secure_session[1].decrypt(nonce=nonce, data=result_cipher+result_tag, associated_data=b'')
+        try:
+            result_cipher, result_tag = self._l2.encrypted_command(len(ciphertext), ciphertext, tag)
+            decrypted = self._secure_session[1].decrypt(nonce=nonce, data=result_cipher+result_tag, associated_data=b'')
+        except Exception:
+            # The chip may have already processed the request even though the
+            # response was lost or corrupted, so the nonce below was never
+            # incremented. Invalidate the session rather than risk a caller
+            # retrying and reusing this nonce with a new plaintext.
+            self._secure_session = None
+            raise
 
         self._secure_session[2] += 1
 
