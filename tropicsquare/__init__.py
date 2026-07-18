@@ -1,7 +1,6 @@
 # by Petr Kracik (c) 2026
 
 __version__ = "0.0.3"
-__license__ = "MIT"
 
 
 from tropicsquare.constants.l2 import SLEEP_MODE_DEEP_SLEEP, SLEEP_MODE_SLEEP, STARTUP_REBOOT, STARTUP_MAINTENANCE_REBOOT
