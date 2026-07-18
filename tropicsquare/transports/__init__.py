@@ -77,9 +77,9 @@ class L1Transport():
             if response_length > 0:
                 data = self._read(response_length)
             else:
-                data = None
+                data = b''
 
-            calccrc = CRC.crc16(response + (data or b''))
+            calccrc = CRC.crc16(response + data)
             respcrc = self._read(2)
 
             self._cs_high()
