@@ -263,8 +263,8 @@ class TestTropicSquareProperties:
         assert key == pubkey
         assert ts._certificate is not None
 
-    def test_public_key_returns_none_if_signature_not_found(self):
-        """Test that public_key returns None if signature not found."""
+    def test_public_key_raises_if_signature_not_found(self):
+        """Test that public_key raises a clear error if signature not found."""
         from tropicsquare.ports.cpython import TropicSquareCPython
 
         # Certificate without signature pattern
@@ -274,9 +274,8 @@ class TestTropicSquareProperties:
         ts = TropicSquareCPython(transport)
         ts._certificate = cert
 
-        key = ts.public_key
-
-        assert key is None
+        with pytest.raises(TropicSquareError):
+            ts.public_key
 
     def test_chipid_property_returns_parsed_chip_id(self):
         """Test that chip_id property returns parsed ChipId object."""
