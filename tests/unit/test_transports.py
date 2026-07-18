@@ -153,7 +153,7 @@ class TestGetResponseBasic:
 
         result = transport.get_response()
 
-        assert result is None
+        assert result == b''
 
 
 class TestGetResponseRetryLogic:
@@ -182,7 +182,7 @@ class TestGetResponseRetryLogic:
 
         result = transport.get_response()
 
-        assert result is None
+        assert result == b''
         assert call_count[0] == 2
         assert transport.cs_low_calls == 2
         assert transport.cs_high_calls == 2
