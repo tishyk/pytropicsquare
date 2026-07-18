@@ -11,7 +11,12 @@ class X25519:
         k[31] &= 127
         k[31] |= 64
         scalar = int.from_bytes(k, "little")
-        u = int.from_bytes(public_bytes, "little")
+
+        # Per RFC 7748 decodeUCoordinate, mask the unused top bit of the
+        # final byte before interpreting the u-coordinate.
+        u_bytes = bytearray(public_bytes)
+        u_bytes[31] &= 0x7f
+        u = int.from_bytes(bytes(u_bytes), "little")
 
         # Curve25519 prime and constant:
         p = 2**255 - 19
