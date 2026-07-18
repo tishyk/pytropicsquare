@@ -35,7 +35,7 @@ class AESGCM:
         J0 = nonce + b'\x00\x00\x00\x01'
         S = self._ghash(associated_data, ciphertext)
         computed_tag = bytes(a ^ b for a, b in zip(self._encrypt_block(J0), S))
-        if computed_tag != tag:
+        if not self._consttime_eq(computed_tag, tag):
             raise ValueError("Invalid tag! Authentication failed.")
         counter = self._inc32(J0)
         plaintext = b""
@@ -99,3 +99,12 @@ class AESGCM:
         counter = int.from_bytes(block[12:], "big")
         counter = (counter + 1) & 0xffffffff
         return block[:12] + counter.to_bytes(4, "big")
+
+
+    def _consttime_eq(self, a, b):
+        if len(a) != len(b):
+            return False
+        result = 0
+        for x, y in zip(a, b):
+            result |= x ^ y
+        return result == 0
