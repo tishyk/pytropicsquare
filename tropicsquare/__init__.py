@@ -20,6 +20,15 @@ from tropicsquare.ecc.signature import EcdsaSignature, EddsaSignature
 from hashlib import sha256
 
 
+def _consttime_eq(a, b):
+    if len(a) != len(b):
+        return False
+    result = 0
+    for x, y in zip(a, b):
+        result |= x ^ y
+    return result == 0
+
+
 class TropicSquare:
     def __new__(cls, *args, **kwargs):
         """Factory method that returns platform-specific implementation.
@@ -220,7 +229,7 @@ class TropicSquare:
         ck_hkdf_cmdres = None
         kauth = None
 
-        if tag != tsauth:
+        if not _consttime_eq(tag, tsauth):
             raise TropicSquareHandshakeError("Authentication tag mismatch - handshake failed")
 
         encrypt_key = self._aesgcm(kcmd)
