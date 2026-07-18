@@ -91,5 +91,6 @@ class UartTransport(L1Transport):
         self._set_cs(True)
 
 
-    def _close(self):
+    def close(self) -> None:
+        """Close the underlying serial port."""
         self._port.close()
